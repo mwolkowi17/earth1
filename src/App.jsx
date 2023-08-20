@@ -2,7 +2,7 @@
 import './App.css'
 import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls,Environment,useGLTF } from '@react-three/drei'
+import { OrbitControls,Environment,useGLTF,Stars,useTexture } from '@react-three/drei'
 
 function Box(props) {
   // This reference gives us direct access to the THREE.Mesh object
@@ -41,16 +41,33 @@ function Earth(){
   )
 }
 
+function EartSphere(){
+  const texture = useTexture('2k_earth_daymap.jpg')
+  const earthRef2 = useRef()
+  useFrame((state, delta) => (earthRef2.current.rotation.y += delta*0.2))
+  return (
+    <group ref={earthRef2}>
+    <mesh  >
+      <sphereGeometry args={[1, 64, 64]} />
+      <meshPhysicalMaterial map={texture} clearcoat={1} clearcoatRoughness={0} roughness={0} metalness={0.5} />
+    </mesh>
+    <Box position={[2,0,0]} />
+    </group>
+  )
+}
+
 export default function App() {
   return (
     <Canvas>
-       <Environment preset="night" background={true} blur={0.3}/>
+       <Environment files="kloppenheim_02_puresky_1k_dark.hdr" background={true} blur={0.1}/>
       {/* <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} /> */}
       {/* <Box position={[0, 0, 0]} />     */}
-      <Earth position={[0,0,0]} />
+      {/* <Earth position={[0,0,0]} /> */}
+      <EartSphere position={[0,0,0]} />
       <OrbitControls />
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
      
     </Canvas>
     
