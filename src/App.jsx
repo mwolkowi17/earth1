@@ -3,6 +3,7 @@ import './App.css'
 import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, useGLTF, Stars, useTexture } from '@react-three/drei'
+import { Plane } from './Plane'
 
 function Box(props) {
   // This reference gives us direct access to the THREE.Mesh object
@@ -34,11 +35,12 @@ function EartSphere() {
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * 0.2))
   return (
     <group ref={earthRef2}>
-      <mesh  >
+      <mesh scale={1.5}  >
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhysicalMaterial map={texture} clearcoat={1} clearcoatRoughness={0} roughness={0} metalness={0.5} />
       </mesh>
-      <Box position={[2, 0, 0]} />
+      {/* <Box position={[2, 0, 0]} /> */}
+      <Plane position={[0, 0, 0]} />
     </group>
   )
 }
@@ -48,7 +50,12 @@ export default function App() {
     <Canvas>
       <Environment files="kloppenheim_02_puresky_1k_dark.hdr" background={true} blur={0.1} />
       <EartSphere position={[0, 0, 0]} />
-      <OrbitControls />
+      <OrbitControls
+      
+        minAzimuthAngle={-Math.PI / 4}
+        maxAzimuthAngle={Math.PI / 4}
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI - Math.PI / 6} />
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
     </Canvas>
 
