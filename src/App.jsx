@@ -1,14 +1,15 @@
 
 import './App.css'
-import { useRef, Suspense } from 'react'
+import { useRef, Suspense, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, Loader, Stars, useTexture } from '@react-three/drei'
 import { Plane } from './Plane'
 import { FaGitkraken, FaGrunt, FaMapMarkerAlt } from 'react-icons/fa'
 import { Marker } from './Marker'
+import { Display } from './Display'
 
 
-function EartSphere() {
+function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * 0.1))
@@ -24,13 +25,13 @@ function EartSphere() {
         <group position={[0, 0, 1.1]} rotation={[0, 0, Math.PI]}>
           <Marker rotation={[0, Math.PI / 2, Math.PI / 2]}>
           <div style={{ position: 'absolute', fontSize: 14, letterSpacing: -0.5, left: 37.5, color:'white' }}>kraken base</div>
-            <FaGitkraken style={{ color: 'indianred', scale:'3' }} />
+            <FaGitkraken className='ikon' style={{ color: 'indianred', scale:'3' }} onClick={props.krakenclick} />
           </Marker>
         </group>
         <group position={[0, 0, -1.1]} rotation={[0, 0, Math.PI]}>
           <Marker rotation={[0, Math.PI / 2, Math.PI / 2]}>
           <div style={{ position: 'absolute', fontSize: 14, letterSpacing: -0.5, left: 37.5, color:'white' }}>corsar group</div>
-            <FaGrunt style={{ color: 'indianred', scale:'3' }} />
+            <FaGrunt className='ikon' style={{ color: 'indianred', scale:'3' }} onClick={props.gruntclick} />
           </Marker>
         </group>
       </mesh>
@@ -58,6 +59,9 @@ function PlaneMoving() {
 
 
 export default function App() {
+ 
+  const [visabilityDisplay,setVisabitityDisplay] = useState('hidden')
+
   return (
     <>
       <Canvas>
@@ -65,8 +69,11 @@ export default function App() {
         <ambientLight />
         <Environment files="kloppenheim_02_puresky_1k_dark.hdr" background={true} blur={0.1} />
         <Suspense fallback={null}>
-          <EartSphere position={[0, 0, 0]} />
+          <EartSphere position={[0, 0, 0]}
+           krakenclick={(e=>{setVisabitityDisplay('visible')})}
+           gruntclick={(e)=>{setVisabitityDisplay('visible')}}  />
           <PlaneMoving position={[0, 0, 0]} />
+         
           <OrbitControls
             minAzimuthAngle={-Math.PI / 4}
             maxAzimuthAngle={Math.PI / 4}
@@ -75,6 +82,7 @@ export default function App() {
           <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         </Suspense>
       </Canvas>
+       <Display isVisible={visabilityDisplay} closeDisplay={(e)=>setVisabitityDisplay('hidden')}/>
       <Loader />
     </>
   )
