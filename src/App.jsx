@@ -7,6 +7,7 @@ import { Plane } from './Plane'
 import { FaGitkraken, FaGrunt, FaMapMarkerAlt } from 'react-icons/fa'
 import { Marker } from './Marker'
 import { Display } from './Display'
+import { dataText } from './datatext'
 
 
 function EartSphere(props) {
@@ -61,6 +62,7 @@ function PlaneMoving() {
 export default function App() {
  
   const [visabilityDisplay,setVisabitityDisplay] = useState('hidden')
+  const [innerdatashow,setInnerdatashow] = useState(dataText[0])
 
   return (
     <>
@@ -70,8 +72,8 @@ export default function App() {
         <Environment files="kloppenheim_02_puresky_1k_dark.hdr" background={true} blur={0.1} />
         <Suspense fallback={null}>
           <EartSphere position={[0, 0, 0]}
-           krakenclick={(e=>{setVisabitityDisplay('visible')})}
-           gruntclick={(e)=>{setVisabitityDisplay('visible')}}  />
+           krakenclick={(e)=>{setVisabitityDisplay('visible'), setInnerdatashow(dataText[0])}}
+           gruntclick={(e)=>{setVisabitityDisplay('visible'),setInnerdatashow(dataText[1])}}  />
           <PlaneMoving position={[0, 0, 0]} />
          
           <OrbitControls
@@ -82,7 +84,10 @@ export default function App() {
           <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         </Suspense>
       </Canvas>
-       <Display isVisible={visabilityDisplay} closeDisplay={(e)=>setVisabitityDisplay('hidden')}/>
+       <Display isVisible={visabilityDisplay}
+        closeDisplay={(e)=>setVisabitityDisplay('hidden')}
+        content2={innerdatashow}
+        />
       <Loader />
     </>
   )
