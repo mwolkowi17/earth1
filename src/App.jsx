@@ -65,6 +65,9 @@ export default function App() {
   const [innerdatashow, setInnerdatashow] = useState(dataText[0])
   const [rotateS, setRotateS] = useState(0.1)
   const [rotationIni, setRotationIni] = useState(Math.PI / 2)
+
+  const orbitref = useRef();
+  console.log(orbitref.current)
   return (
     <>
       <Canvas>
@@ -77,19 +80,22 @@ export default function App() {
               setVisabitityDisplay('visible'),
                 setInnerdatashow(dataText[0]),
                 setRotateS(0),
-                setRotationIni(0)
+                setRotationIni(0),
+                orbitref.current.reset()
             }}
             gruntclick={(e) => {
               setVisabitityDisplay('visible'),
                 setInnerdatashow(dataText[1]),
                 setRotateS(0),
-                setRotationIni(Math.PI)
+                setRotationIni(Math.PI),
+                orbitref.current.reset()
             }}
             rotateSphere={rotateS}
             rotationinitial={rotationIni} />
           <PlaneMoving position={[0, 0, 0]} />
 
           <OrbitControls
+            ref={orbitref}
             minAzimuthAngle={-Math.PI / 4}
             maxAzimuthAngle={Math.PI / 4}
             minPolarAngle={Math.PI / 6}
@@ -98,7 +104,7 @@ export default function App() {
         </Suspense>
       </Canvas>
       <Display isVisible={visabilityDisplay}
-        closeDisplay={(e) => { setVisabitityDisplay('hidden'), setRotateS(0.1) }}
+        closeDisplay={(e) => { setVisabitityDisplay('hidden'), setRotateS(0.1),setRotationIni(Math.PI/2), orbitref.current.reset() }}
         content2={innerdatashow}
       />
       <Loader />
