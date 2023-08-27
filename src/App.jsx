@@ -8,8 +8,9 @@ import { FaGitkraken, FaGrunt, FaMapMarkerAlt } from 'react-icons/fa'
 import { Marker } from './Marker'
 import { Display } from './Display'
 import { dataText } from './datatext'
+import { useSpring, animated } from '@react-spring/three'
 
-
+//tu/ w tym komponencie trzeba dodać spring
 function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
@@ -68,6 +69,12 @@ export default function App() {
 
   const orbitref = useRef();
   console.log(orbitref.current)
+  //do sterowania animacją
+  const [activeA,setActiveA]=useState(false);
+  const {rotate}= useSpring({rotate:activeA?0:Math.PI/2})
+  const [positionA,setPositionA]=useState(true)
+  console.log(rotate)
+
   return (
     <>
       <Canvas>
@@ -91,6 +98,7 @@ export default function App() {
                 orbitref.current.reset()
             }}
             rotateSphere={rotateS}
+            // tylko rotationinitial do sprite
             rotationinitial={rotationIni} />
           <PlaneMoving position={[0, 0, 0]} />
 
