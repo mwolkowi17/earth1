@@ -8,16 +8,20 @@ import { FaGitkraken, FaGrunt, FaMapMarkerAlt } from 'react-icons/fa'
 import { Marker } from './Marker'
 import { Display } from './Display'
 import { dataText } from './datatext'
-import { useSpring, animated } from '@react-spring/three'
+import { useSpring, animated, config } from '@react-spring/three'
 
-//tu/ w tym komponencie trzeba dodać spring
 function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
+  const [activeA, setActiveA] = useState(false);
+  const { rotate } = useSpring({
+    rotate: props.activeA ? props.angle : Math.PI / 2,
+    config: config.slow
+  })
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * props.rotateSphere))
   return (
-    <group ref={earthRef2} rotation-y={props.rotationinitial}>
-      <mesh scale={1.5}  >
+    <group >
+      <animated.mesh scale={1.5} ref={earthRef2} rotation-y={rotate} >
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhysicalMaterial map={texture} clearcoat={1} clearcoatRoughness={0} roughness={0} metalness={0.5} />
         <Marker rotation={[0, Math.PI / 2, 0]} position={[0, 1.3, 0]}>
@@ -36,7 +40,7 @@ function EartSphere(props) {
             <FaGrunt className='ikon' style={{ color: 'indianred', scale: '3' }} onClick={props.gruntclick} />
           </Marker>
         </group>
-      </mesh>
+      </animated.mesh>
       {/* <Box position={[2, 0, 0]} /> */}
       {/* <Plane position={[0, 0, 0]} /> */}
     </group>
@@ -66,14 +70,15 @@ export default function App() {
   const [innerdatashow, setInnerdatashow] = useState(dataText[0])
   const [rotateS, setRotateS] = useState(0.1)
   const [rotationIni, setRotationIni] = useState(Math.PI / 2)
+  const [animacja1, setAnimacja1] = useState(false)
+  const [angleanimacja1, setAngleanimacja1] = useState(0)
 
   const orbitref = useRef();
   console.log(orbitref.current)
   //do sterowania animacją
-  const [activeA,setActiveA]=useState(false);
-  const {rotate}= useSpring({rotate:activeA?0:Math.PI/2})
-  const [positionA,setPositionA]=useState(true)
-  console.log(rotate)
+
+
+  const [positionA, setPositionA] = useState(true)
 
   return (
     <>
@@ -87,19 +92,22 @@ export default function App() {
               setVisabitityDisplay('visible'),
                 setInnerdatashow(dataText[0]),
                 setRotateS(0),
-                setRotationIni(0),
-                orbitref.current.reset()
+                setAngleanimacja1(0)
+              setAnimacja1(true)
+              orbitref.current.reset()
             }}
             gruntclick={(e) => {
               setVisabitityDisplay('visible'),
                 setInnerdatashow(dataText[1]),
                 setRotateS(0),
-                setRotationIni(Math.PI),
-                orbitref.current.reset()
+                setAngleanimacja1(Math.PI)
+              setAnimacja1(true)
+              orbitref.current.reset()
             }}
             rotateSphere={rotateS}
-            // tylko rotationinitial do sprite
-            rotationinitial={rotationIni} />
+            angle={angleanimacja1}
+            activeA={animacja1}
+          />
           <PlaneMoving position={[0, 0, 0]} />
 
           <OrbitControls
@@ -112,7 +120,13 @@ export default function App() {
         </Suspense>
       </Canvas>
       <Display isVisible={visabilityDisplay}
-        closeDisplay={(e) => { setVisabitityDisplay('hidden'), setRotateS(0.1),setRotationIni(Math.PI/2), orbitref.current.reset() }}
+        closeDisplay={(e) => {
+          setVisabitityDisplay('hidden'),
+            setRotateS(0.1),
+            //setRotationIni(Math.PI / 2),
+            setAnimacja1(false)
+          orbitref.current.reset()
+        }}
         content2={innerdatashow}
       />
       <Loader />
