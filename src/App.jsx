@@ -13,23 +13,22 @@ import { useSpring, animated, config } from '@react-spring/three'
 function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
-  const [activeA, setActiveA] = useState(false);
-  //do sprite poniżej dokładamy jeszcze position i to powinno wystarczyć do animacji
-  const { rotate, position } = useSpring({
+  const [activeB, setActiveB] = useState(false);
+  const { rotate, rotateB, position } = useSpring({
     rotate: props.activeA ? props.angle : Math.PI / 2,
-    position: props.activeA ? [0,0,2]: [0,0,0],
+    rotateB: props.activeB ? Math.PI / 2 : 0,
+    position: props.activeA ? [0, 0, 2] : [0, 0, 0],
     config: config.slow
   })
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * props.rotateSphere))
   return (
     <group >
-      {/* tu dokładamy jeszcze position sterowane spritem */}
-      <animated.mesh scale={1.5} ref={earthRef2} rotation-y={rotate} position={position} >
+      <animated.mesh scale={1.5} ref={earthRef2} rotation-y={rotate} rotation-x={rotateB} position={position} >
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhysicalMaterial map={texture} clearcoat={1} clearcoatRoughness={0} roughness={0} metalness={0.5} />
         <Marker rotation={[0, Math.PI / 2, 0]} position={[0, 1.3, 0]}>
           <div style={{ position: 'absolute', fontSize: 14, letterSpacing: -0.5, left: 37.5, color: 'white' }}>north</div>
-          <FaMapMarkerAlt style={{ color: 'orange', scale: '3' }} />
+          <FaMapMarkerAlt style={{ color: 'orange', scale: '3' }} onClick={props.northclick} />
         </Marker>
         <group position={[0, 0, 1.1]} rotation={[0, 0, Math.PI]}>
           <Marker rotation={[0, Math.PI / 2, Math.PI / 2]}>
@@ -44,8 +43,7 @@ function EartSphere(props) {
           </Marker>
         </group>
       </animated.mesh>
-      {/* <Box position={[2, 0, 0]} /> */}
-      {/* <Plane position={[0, 0, 0]} /> */}
+
     </group>
   )
 }
@@ -55,11 +53,6 @@ function PlaneMoving() {
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * 0.3))
   return (
     <group ref={earthRef2}>
-      {/* <mesh scale={1.5}  >
-        <sphereGeometry args={[0.2, 64, 64]} />
-        <meshStandardMaterial  />
-      </mesh> */}
-      {/* <Box position={[2, 0, 0]} /> */}
       <Plane position={[0, 0, 0]} />
     </group>
   )
@@ -75,13 +68,12 @@ export default function App() {
   const [rotationIni, setRotationIni] = useState(Math.PI / 2)
   const [animacja1, setAnimacja1] = useState(false)
   const [angleanimacja1, setAngleanimacja1] = useState(0)
+  const [animacja2, setAnimacja2] = useState(false);
 
   const orbitref = useRef();
-  console.log(orbitref.current)
-  //do sterowania animacją
 
 
-  const [positionA, setPositionA] = useState(true)
+
 
   return (
     <>
@@ -97,6 +89,7 @@ export default function App() {
                 setRotateS(0),
                 setAngleanimacja1(0)
               setAnimacja1(true)
+              setAnimacja2(false)
               orbitref.current.reset()
             }}
             gruntclick={(e) => {
@@ -105,11 +98,14 @@ export default function App() {
                 setRotateS(0),
                 setAngleanimacja1(Math.PI)
               setAnimacja1(true)
+              setAnimacja2(false)
               orbitref.current.reset()
             }}
+            northclick={() => { setAnimacja2(!animacja2) }}
             rotateSphere={rotateS}
             angle={angleanimacja1}
             activeA={animacja1}
+            activeB={animacja2}
           />
           <PlaneMoving position={[0, 0, 0]} />
 
