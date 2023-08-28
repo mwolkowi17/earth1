@@ -14,14 +14,17 @@ function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
   const [activeA, setActiveA] = useState(false);
-  const { rotate } = useSpring({
+  //do sprite poniżej dokładamy jeszcze position i to powinno wystarczyć do animacji
+  const { rotate, position } = useSpring({
     rotate: props.activeA ? props.angle : Math.PI / 2,
+    position: props.activeA ? [0,0,2]: [0,0,0],
     config: config.slow
   })
   useFrame((state, delta) => (earthRef2.current.rotation.y += delta * props.rotateSphere))
   return (
     <group >
-      <animated.mesh scale={1.5} ref={earthRef2} rotation-y={rotate} >
+      {/* tu dokładamy jeszcze position sterowane spritem */}
+      <animated.mesh scale={1.5} ref={earthRef2} rotation-y={rotate} position={position} >
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhysicalMaterial map={texture} clearcoat={1} clearcoatRoughness={0} roughness={0} metalness={0.5} />
         <Marker rotation={[0, Math.PI / 2, 0]} position={[0, 1.3, 0]}>
