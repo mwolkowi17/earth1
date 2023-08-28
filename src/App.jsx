@@ -65,15 +65,12 @@ export default function App() {
   const [visabilityDisplay, setVisabitityDisplay] = useState('hidden')
   const [innerdatashow, setInnerdatashow] = useState(dataText[0])
   const [rotateS, setRotateS] = useState(0.1)
-  const [rotationIni, setRotationIni] = useState(Math.PI / 2)
+  //const [rotationIni, setRotationIni] = useState(Math.PI / 2)
   const [animacja1, setAnimacja1] = useState(false)
   const [angleanimacja1, setAngleanimacja1] = useState(0)
   const [animacja2, setAnimacja2] = useState(false);
 
   const orbitref = useRef();
-
-
-
 
   return (
     <>
@@ -122,7 +119,6 @@ export default function App() {
         closeDisplay={(e) => {
           setVisabitityDisplay('hidden'),
             setRotateS(0.1),
-            //setRotationIni(Math.PI / 2),
             setAnimacja1(false)
           orbitref.current.reset()
         }}

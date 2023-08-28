@@ -1,6 +1,6 @@
 export function Innertext(props) {
     return(
-    <div style={{fontSize:22}}>
+    <div className="textinner" >
         {props.content}
         
     </div>
