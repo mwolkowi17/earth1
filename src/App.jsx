@@ -13,7 +13,7 @@ import { useSpring, animated, config } from '@react-spring/three'
 function EartSphere(props) {
   const texture = useTexture('2k_earth_daymap.jpg')
   const earthRef2 = useRef()
-  const [activeB, setActiveB] = useState(false);
+  //const [activeB, setActiveB] = useState(false);
   const { rotate, rotateB, position } = useSpring({
     rotate: props.activeA ? props.angle : Math.PI / 2,
     rotateB: props.activeB ? Math.PI / 2 : 0,
